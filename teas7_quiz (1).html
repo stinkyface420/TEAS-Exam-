@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAS 7 Practice Exam</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem 1rem;}
+.shell{display:flex;gap:1rem;max-width:960px;width:100%;align-items:flex-start;}
+
+/* Sidebar */
+.sidebar{width:160px;flex-shrink:0;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);padding:1rem;position:sticky;top:1.5rem;}
+.sidebar h3{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;}
+.nav-btn{display:block;width:100%;text-align:left;padding:8px 10px;margin-bottom:6px;border-radius:8px;border:1.5px solid #e8e8e8;background:#fff;color:#555;font-size:13px;cursor:pointer;transition:all 0.15s;}
+.nav-btn:hover{background:#f0f4ff;border-color:#3b7cf4;color:#3b7cf4;}
+.nav-btn.active{background:#3b7cf4;border-color:#3b7cf4;color:#fff;font-weight:500;}
+.nav-btn.done{background:#f0fdf4;border-color:#a8e6cf;color:#1a6b4a;}
+.nav-btn.done.active{background:#3b7cf4;border-color:#3b7cf4;color:#fff;}
+.nav-divider{height:1px;background:#f0f0f0;margin:10px 0;}
+.nav-restart{display:block;width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid #fcd5d5;background:#fff;color:#c0392b;font-size:12px;cursor:pointer;text-align:left;margin-top:4px;}
+.nav-restart:hover{background:#fff0f0;}
+
+/* Main card */
+.card{flex:1;background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,0.08);padding:1.75rem;min-width:0;}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;}
+h1{font-size:20px;font-weight:600;color:#1a1a1a;}
+.header-badge{font-size:12px;padding:4px 12px;border-radius:20px;background:#eef3ff;color:#3b7cf4;border:1px solid #c7d9fd;font-weight:500;}
+
+/* Progress */
+.progress-wrap{margin-bottom:1.25rem;}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:5px;}
+.progress-bar-bg{height:5px;background:#eee;border-radius:3px;}
+.progress-bar-fill{height:5px;background:#3b7cf4;border-radius:3px;transition:width 0.4s;}
+
+/* Passage */
+.passage-box{background:#fafafa;border:1px solid #e8e8e8;border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
+.passage-title{font-size:12px;font-weight:600;color:#3b7cf4;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;}
+.passage-text{font-size:15px;color:#222;line-height:1.75;white-space:pre-wrap;}
+
+/* Chart */
+.chart-wrap{background:#fafafa;border:1px solid #e8e8e8;border-radius:10px;padding:1rem 1.125rem;margin-bottom:1.125rem;}
+.chart-title{font-size:12px;font-weight:600;color:#3b7cf4;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.75rem;text-align:center;}
+
+/* Question */
+.q-text{font-size:15px;font-weight:500;color:#1a1a1a;margin:0 0 1rem;line-height:1.6;}
+.option-btn{display:block;width:100%;text-align:left;padding:11px 15px;margin-bottom:8px;border-radius:10px;border:1.5px solid #e4e4e4;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;transition:background 0.15s,border-color 0.15s;line-height:1.4;}
+.option-btn:hover:not(:disabled){background:#f5f7ff;border-color:#3b7cf4;}
+.option-btn.selected{border-color:#3b7cf4;background:#eef3ff;color:#1a4db0;}
+.option-btn.correct{border-color:#22a06b;background:#e3f9f0;color:#1a6b4a;font-weight:500;}
+.option-btn.incorrect{border-color:#e03e3e;background:#fff0f0;color:#a02020;}
+.option-btn:disabled{cursor:not-allowed;}
+.feedback{margin-top:0.75rem;padding:11px 15px;border-radius:10px;font-size:14px;line-height:1.5;}
+.feedback.right{background:#e3f9f0;color:#1a6b4a;border:1px solid #a8e6cf;}
+.feedback.wrong{background:#fff0f0;color:#a02020;border:1px solid #f5b8b8;}
+
+/* Button row */
+.btn-row{display:flex;gap:9px;margin-top:1rem;flex-wrap:wrap;align-items:center;}
+.btn-primary{padding:10px 22px;border-radius:10px;border:none;background:#3b7cf4;color:#fff;font-size:14px;font-weight:500;cursor:pointer;}
+.btn-primary:hover:not(:disabled){background:#2563eb;}
+.btn-primary:disabled{background:#b0c4f8;cursor:not-allowed;}
+.btn-secondary{padding:10px 22px;border-radius:10px;border:1.5px solid #e4e4e4;background:#fff;color:#1a1a1a;font-size:14px;cursor:pointer;}
+.btn-secondary:hover{background:#f5f5f5;}
+.btn-back{padding:10px 16px;border-radius:10px;border:1.5px solid #e4e4e4;background:#fff;color:#888;font-size:14px;cursor:pointer;}
+.btn-back:hover{background:#f5f5f5;color:#555;}
+
+/* Explanation box */
+.explanation-box{margin-top:10px;background:#f8f9ff;border:1px solid #d0dbff;border-radius:10px;padding:12px 16px;}
+.explanation-title{font-size:12px;font-weight:600;color:#3b7cf4;margin-bottom:7px;letter-spacing:0.02em;}
+.explanation-text{font-size:14px;color:#333;line-height:1.65;}
+.explanation-loading{font-size:13px;color:#888;display:flex;align-items:center;gap:8px;}
+.exp-spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#3b7cf4;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Section complete */
+.section-complete{text-align:center;padding:2rem 1rem;}
+.section-complete h2{font-size:20px;font-weight:600;margin-bottom:0.4rem;color:#1a1a1a;}
+.section-complete p{font-size:14px;color:#555;margin-bottom:1.25rem;}
+.section-score-big{font-size:52px;font-weight:700;color:#3b7cf4;line-height:1;}
+.section-score-sub{font-size:14px;color:#888;margin:0.3rem 0 1.25rem;}
+
+/* Final results */
+.results-wrap{padding:0.5rem 0;}
+.results-header{text-align:center;margin-bottom:1.5rem;}
+.results-pct{font-size:64px;font-weight:700;color:#1a1a1a;line-height:1;}
+.results-sub{font-size:16px;color:#555;margin:0.4rem 0 1rem;}
+.results-pills{display:flex;gap:12px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.rpill{padding:7px 18px;border-radius:20px;font-size:14px;font-weight:500;}
+.rpill.s{background:#e3f9f0;color:#1a6b4a;}
+.rpill.d{background:#fff0f0;color:#a02020;}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem;}
+.results-cell{background:#f8f9fb;border-radius:10px;padding:14px;text-align:center;}
+.results-cell .rc-label{font-size:12px;color:#888;margin-bottom:3px;}
+.results-cell .rc-val{font-size:22px;font-weight:600;color:#1a1a1a;}
+.results-cell .rc-sub{font-size:11px;color:#aaa;margin-top:2px;}
+
+/* Review table */
+.review-section{margin-bottom:1.5rem;}
+.review-section h3{font-size:14px;font-weight:600;color:#444;margin-bottom:0.6rem;padding-bottom:5px;border-bottom:1px solid #f0f0f0;}
+.review-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f8f8f8;font-size:13px;}
+.review-item:last-child{border-bottom:none;}
+.ri-icon{flex-shrink:0;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px;}
+.ri-icon.c{background:#e3f9f0;color:#1a6b4a;}
+.ri-icon.w{background:#fff0f0;color:#a02020;}
+.ri-q{color:#333;line-height:1.45;flex:1;}
+.ri-ans{font-size:12px;color:#888;margin-top:2px;}
+.ri-ans span{color:#a02020;}
+.ri-ans b{color:#1a6b4a;}
+
+@media(max-width:620px){
+  .shell{flex-direction:column;}
+  .sidebar{width:100%;position:static;display:flex;flex-wrap:wrap;gap:6px;padding:0.75rem;}
+  .sidebar h3{width:100%;}
+  .nav-btn{width:auto;flex:1;text-align:center;}
+  .nav-divider{width:100%;}
+  .nav-restart{width:100%;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="sidebar" id="sidebar">
+    <h3>Sections</h3>
+    <button class="nav-btn" id="nav-Reading" onclick="jumpToSubject('Reading')">&#128214; Reading</button>
+    <button class="nav-btn" id="nav-Math" onclick="jumpToSubject('Math')">&#10022; Math</button>
+    <button class="nav-btn" id="nav-Science" onclick="jumpToSubject('Science')">&#9879; Science</button>
+    <button class="nav-btn" id="nav-English" onclick="jumpToSubject('English')">&#9998; English</button>
+    <button class="nav-btn" id="nav-Final" onclick="jumpToFinal()" style="display:none;">&#127942; Final Results</button>
+    <div class="nav-divider"></div>
+    <button class="nav-restart" id="restart-btn" onclick="restartQuiz()">&#8635; Restart</button>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h1>TEAS 7 Practice Exam</h1>
+      <span class="header-badge" id="hbadge">Reading</span>
+    </div>
+    <div id="app"></div>
+  </div>
+</div>
+
+<script>
+// ─── CHOIR CHART SVG ─────────────────────────────────────────────────────────
+function choirChartSVG() {
+  const data = [
+    { grade:'9th', total:48, male:39, female:56 },
+    { grade:'10th', total:38, male:28, female:48 },
+    { grade:'11th', total:50, male:37, female:62 },
+    { grade:'12th', total:39, male:20, female:58 }
+  ];
+  const W=520, H=220, pad={top:20,right:20,bottom:30,left:30};
+  const chartW=W-pad.left-pad.right, chartH=H-pad.top-pad.bottom;
+  const maxVal=70, groupW=chartW/4, barW=groupW/4.2;
+  const colors={total:'#b0bec5',male:'#1a4db0',female:'#e91e8c'};
+  const yLines=[0,20,40,60,80];
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:520px;display:block;margin:auto;">`;
+
+  // grid lines & y-labels
+  yLines.forEach(v=>{
+    const y=pad.top+chartH-(v/maxVal)*chartH;
+    svg+=`<line x1="${pad.left}" y1="${y}" x2="${W-pad.right}" y2="${y}" stroke="#e8e8e8" stroke-width="1"/>`;
+    svg+=`<text x="${pad.left-4}" y="${y+4}" text-anchor="end" font-size="10" fill="#999">${v}%</text>`;
+  });
+
+  // bars
+  data.forEach((d,gi)=>{
+    const gx=pad.left+gi*groupW+groupW*0.1;
+    const bars=[
+      {val:d.total,col:colors.total,x:0},
+      {val:d.male,col:colors.male,x:barW+2},
+      {val:d.female,col:colors.female,x:(barW+2)*2}
+    ];
+    bars.forEach(b=>{
+      const bh=(b.val/maxVal)*chartH;
+      const bx=gx+b.x, by=pad.top+chartH-bh;
+      svg+=`<rect x="${bx}" y="${by}" width="${barW}" height="${bh}" fill="${b.col}" rx="2"/>`;
+      svg+=`<text x="${bx+barW/2}" y="${by-3}" text-anchor="middle" font-size="9" fill="#555">${b.val}</text>`;
+    });
+    // grade label
+    svg+=`<text x="${gx+barW+2}" y="${H-5}" text-anchor="middle" font-size="11" fill="#444">${d.grade}</text>`;
+  });
+
+  // legend
+  const leg=[{col:colors.total,label:'TOTAL'},{col:colors.male,label:'Male'},{col:colors.female,label:'Female'}];
+  let lx=pad.left;
+  leg.forEach(l=>{
+    svg+=`<rect x="${lx}" y="${H-pad.bottom+14}" width="10" height="10" fill="${l.col}" rx="2"/>`;
+    svg+=`<text x="${lx+13}" y="${H-pad.bottom+23}" font-size="10" fill="#555">${l.label}</text>`;
+    lx+=l.label.length*7+20;
+  });
+
+  svg+=`</svg>`;
+  return svg;
+}
+
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const SUBJECT_ORDER = ["Reading","Math","Science","English"];
+
+const READING_GROUPS = [
+  {
+    title:"The Deaf President Now Movement",
+    passage:`The Deaf President Now (DPN) movement marked a growing shift in perceptions of deaf people.
+
+Gallaudet University, in Washington D.C., was established as a school for deaf students. The founder convinced Congress to fund the school, and it eventually became an institution for higher learning. In a nod of support, U.S. President Ulysses S. Grant signed the Gallaudet diplomas. Future presidents continued the tradition, so all Gallaudet graduates receive diplomas signed by the U.S. President. Gallaudet University grew as a center for deaf education and advocacy.
+
+In 1988, Gallaudet University was selecting a new university president. The board of trustees had well-qualified candidates, and all but one was deaf. On a Sunday, the board hastily announced they had selected the sole hearing candidate.
+
+The reaction on campus was outrage. Students congregated to protest. Crowds marched to the meeting location and demanded an explanation. Through the closed-door discussion with protest leaders, a trustee created more discontent. He allegedly stated, "Deaf people are not able to function in a hearing world."
+
+Throughout the week, there were more speeches and rallies. A media blitz spread the news globally. Students did not attend class to express their anger. Protest leaders formalized their demands, including a deaf president, the offending trustee must resign, the board of trustees must have 51% deaf leadership, and no reprisals against participants.
+
+Support flowed in from across the world. The U.S. Vice President wrote, "Gallaudet has a responsibility to set an example and thus to appoint a president who is not only highly qualified, but who is also deaf."
+
+After a week of peaceful protests, speeches, and news coverage, the newly appointed hearing president resigned. Students wore buttons that read 3½, indicating how many demands were left.
+
+On the following Sunday, the board of trustees met again. Just a week after it began, the DPN movement was successful. All demands were met.`,
+    questions:[
+      {q:"Which of the following is irrelevant information when writing a summary of the passage?",opts:["Students wore buttons that read 3½.","The board of trustees selected the only hearing candidate.","All the demands of the DPN protest were met.","Students protested for just a week."],ans:0},
+      {q:"Which of the following is a detail that can help the reader infer why the U.S. vice president wrote a letter of support for the DPN movement?",opts:["The U.S. vice president was a Gallaudet University graduate who was not deaf.","The U.S. president signs the diplomas of Gallaudet University graduates.","The Gallaudet University students gave speeches supporting their demands.","Closed-door discussion created more discontent among the Gallaudet University students."],ans:1},
+      {q:"Which of the following is a conclusion that can be drawn from the passage?",opts:["The DPN movement started when the only hearing candidate was appointed as president.","The DPN movement was a first-of-its-kind representation protest movement.","The board of trustees did not bend to the pressure the movement applied.","The students who participated in the protest would later face consequences."],ans:0},
+      {q:"Which of the following would be a textual feature to add to the passage if used in a magazine publication?",opts:["Footnotes sharing information on the U.S. presidents mentioned in the passage","Subheadings before each paragraph with topic titles","An image of Gallaudet University students at a rally wearing 3½ buttons","A map of the building where the board of trustees were meeting"],ans:2},
+      {q:"Which of the following is evidence from the text that supports the conclusion that the board of trustees' actions sparked the DPN movement?",opts:["The board of trustees were not deaf themselves.","The board of trustees hired the only hearing candidate from the applicant pool.","The board of trustees arranged for U.S. presidents to sign all the diplomas for Gallaudet University graduates.","The board of trustees met in an emergency session a week after their first announcement."],ans:1},
+      {q:"Which of the following claims is similar to the argument of the DPN movement?",opts:["Practical concerns, like cost and effort, should be prioritized in decision making.","Inclusion and representation matter in leadership and governance.","Everyone should be treated the same, regardless of their background or ability.","Leaders are effective only as a result of professional experience."],ans:1},
+      {q:"Which of the following pieces of data would be relevant to proving the ongoing effect of the DPN movement?",opts:["A map of Gallaudet University's campus expansions over time starting from incorporation in the 1800s until present day","A chart showing the number of U.S. university graduates appointed to global leadership positions between 1989 and 2009","An in-depth report published in 2000 with Idaho focus group information regarding sentiments towards the Gallaudet deaf community","An infographic of the impact of Gallaudet University's policies, student satisfaction rates, and campus accessibility improvements since 1989"],ans:3}
+    ]
+  },
+  {
+    title:"Real Estate Listing — 124 Tulip Dr, Miami, FL",
+    passage:`124 Tulip Dr, Miami, FL, United States — $21,000,000
+Beds: 9 | Baths: 8 | Half Baths: 4 | Square Feet: 13,072
+
+Located on 124 Tulip Drive, just next to the glittering shine of the Atlantic Ocean, this 9-bedroom, 8-bathroom estate is waiting to be made into a home. Surrounded by well-kept grass, warm golden sand, and stunning foliage, this gem is a hidden treasure among the other homes on Tulip Drive. With wide open windows in nearly every room of the estate, this home allows a view of the beach and the ocean at any time of day. In it can be found not one, but two separate kitchens, both adorned with marble countertops, brand-new stainless-steel appliances, and plenty of space for cooking, drinking wine, or hosting dinner parties.
+
+The spacious bedrooms allow for plenty of decoration, and the master bedroom comes with two separate bathrooms attached to it, including spa-like luxury with clawfoot bathtubs and waterfall showers. Three separate floors connected by spiral staircases allows for detailed organization, as well as plenty of space for various hobby rooms. Included as well is an on-site garage that holds up to five cars, a separate laundry facility on property, and a private, well-equipped gym.
+
+Whether you want to curl up by the window in the at-home office with a book and a cup of coffee, swim in the Atlantic Ocean with private access to the beach, or dip your toe in one of the three separate swimming pools or hot tubs, 124 Tulip Drive could be your next home.
+
+*All information listed is deemed reliable by the listing agent but cannot be guaranteed and should be independently verified.`,
+    questions:[
+      {q:"Which of the following is a key point that the text offers about the passage?",opts:["This house requires a lot of upkeep.","This house will not be on the market long.","This house will make your friends jealous.","This house offers amenities such as multiple swimming pools."],ans:3},
+      {q:"Which of the following is the main purpose of this passage?",opts:["To take a stand","To criticize actions","To amuse and delight","To persuade others"],ans:3},
+      {q:"Based upon the evidence presented in the text, which of the following conclusions can be drawn?",opts:["This house is in a neighborhood that is great for families.","This house would benefit from a more accessible laundry room.","This house is affordable for the average homebuyer.","This house can accommodate multiple guests."],ans:3},
+      {q:"Based upon the evidence presented in the text, which of the following conclusions can be drawn about fitness?",opts:["This house has a rental unit available in the summer.","This house is centrally located for short commutes into the city.","The house requires a full staff to keep it clean.","The house is suitable for fitness-oriented residents."],ans:3},
+      {q:"In addition to the information in the passage, which of the following resources would assist a potential buyer's decision-making process?",opts:["A blog entry about maintenance considerations caused by salt-water corrosion","A magazine article about the benefits of downsizing your home for retirement","A science website about coral bleaching caused by climate change","A tourist pamphlet about visiting the Everglades"],ans:0}
+    ]
+  },
+  {
+    title:"Dear Diary — Penguins",
+    passage:`Dear Diary,
+
+Today on my school fieldtrip I learned a lot about penguins. I wasn't very excited at first, but then I found out how cool they can be!
+
+For example, even though they're flightless birds, some species of penguins have a maximum swimming speed of over 7 miles per hour! Flying is pretty awesome, but swimming seems really cool too.
+
+It makes sense that penguins are such strong swimmers, though. Apparently, they spend half their lives on land, and the other half in the water! And since they usually live close to the water, penguins often eat krill, fish, and other seafood. I've never really liked seafood, but now I want to try some.
+
+That's all that I remember for today, but I hope I get to go back to the zoo soon to learn more about them.`,
+    questions:[
+      {q:"The author was inspired to take action based on learning about penguins. Which of the following excerpts from the passage is evidence to support that conclusion?",opts:["Now I want to try some","I wasn't very excited at first","I found out how cool they can be","Swimming seems really cool too"],ans:0},
+      {q:"Which of the following data sources would be useful to help the reader draw a conclusion about a penguin's time on land?",opts:["An encyclopedia article describing how penguins create nests for their young","A blog post about the functions of penguin feathers","A timeline displaying the evolution of the wing turned flipper","A map of the arctic locations where populations of penguins are most concentrated"],ans:0}
+    ]
+  },
+  {
+    title:"Crispy Tofu Recipe",
+    passage:`Ingredients:
+1 block extra-firm tofu
+1 Tbsp neutral-flavored oil, such as canola or grapeseed
+1 Tbsp soy sauce
+1 Tbsp cornstarch
+
+Directions:
+Preheat oven to 400°F. Remove tofu from package and drain. Gently press tofu between two paper towels to remove excess water. Cut into cubes. Add tofu cubes to a medium mixing bowl. Add oil and soy sauce; stir gently with a rubber spatula to combine. Add cornstarch and mix until tofu cubes are evenly coated. Transfer to a lined baking sheet. Bake for 20 to 25 minutes.`,
+    questions:[
+      {q:"Which of the following resources would be useful after a cook makes this recipe?",opts:["How to Measure Cornstarch","Suggestions for Serving Crispy Tofu","How to Select Tofu","Substitutions for Canola Oil"],ans:1},
+      {q:"To which of the following resources might a reader turn to discover helpful information about the main ingredient of this recipe?",opts:["A pamphlet: 'Incorporating More Vegetables into Your Day'","A book: 'Winning Ways with Soy Sauce and Tamari'","A television show: 'Animal Protein and You'","An article: 'Characteristics and Misconceptions of Tofu'"],ans:3}
+    ]
+  },
+  {
+    title:"Making a Mash for Box Turtles",
+    passage:`First, gather the ingredients. Box turtles require 50% of their diet to be protein and 50% plant matter. Suitable protein options include eggs, insects, mice, quail, turkey, and shrimp. Plant matter can be safe greens, fruits, vegetables, or flowers. Try to limit fruit to 10% of the mash. A few commercial pellets can be added as well. It is good practice to add vitamins.
+
+Second, cook any raw proteins, but do not add any seasonings or oils. Eggshells can be included in the mash for extra calcium.
+
+Third, roughly chop all ingredients. Then blend them all together, adding a small amount of water if necessary.
+
+Lastly, divide the mash into portions of an appropriate size and freeze it.`,
+    questions:[
+      {q:"From the content of the passage, which of the following can the reader infer about adding commercial pellets to the prepared mash?",opts:["Adding crushed eggshells to the mash eliminates the need for adding commercial pellets.","Vitamins should also be included any time commercial pellets are added to the prepared mash.","Box turtles require complex and balanced nutrients, which can be enhanced by adding commercial pellets.","Commercial pellets are not necessary if you add extra fruit to the box turtle mash."],ans:2},
+      {q:"Which of the following pieces of evidence would increase credibility if added to the instructions?",opts:["A map of pet stores that carry box turtles, tanks, and other accessories","A color photo of a healthy female box turtle eating the prepared mash","An alphabetical list of all possible protein sources for domestic box turtles","A source citation that verifies the percentages suggested for the mash"],ans:3}
+    ]
+  },
+  {
+    title:"Wangari Maathai",
+    passage:`Wangari Maathai was the first African woman and environmentalist to win the Nobel Peace Prize in 2004. She was born on April 1, 1940, in Ihithe, a village in the central highlands of Kenya. Maathai received a scholarship to Benedictine College in Kansas, where she majored in biology. She earned a master's degree in biology from the University of Pittsburgh, and a doctorate from the University of Nairobi in Kenya. She was the first woman in Central and East Africa to have a PhD in Philosophy.
+
+In 1977, Maathai founded the Green Belt Movement, which empowers women and fights deforestation through planting trees. Women in this program learn skills like beekeeping they can use to earn money and gain independence.`,
+    questions:[
+      {q:"Which of the following is the main idea of this passage?",opts:["The Greenbelt Movement is an empowering environmental group","Maathai earned her doctorate from The University of Nairobi.","Maathai is a highly accomplished leader and trail blazer.","Maathai was born April 1, 1940."],ans:2},
+      {q:"Which of the following is a supporting detail about Maathai's educational accomplishments?",opts:["She founded the Green Belt Movement, which empowers women and fights deforestation through planting trees.","Maathai earned a master's degree in biology from the University of Pittsburgh.","Maathai was the first African woman and environmentalist to win the Nobel Peace Prize in 2004.","She was born on April 1, 1940 in Ihithe, a village in the central highlands of Kenya."],ans:1},
+      {q:"Based upon the evidence presented in the text, which of the following conclusions can be drawn?",opts:["Maathai encourages women to achieve higher levels of education.","Maathai currently resides in Africa, where she continues her work with the Green Belt Movement.","Maathai pursued a PhD in Philosophy because she lost interest in Biology.","Maathai has a passion for social and environmental justice."],ans:3}
+    ]
+  },
+  {
+    title:"Bedtime Story",
+    passage:`Once upon a time there lived a frog named Frog. Frog had many neighbors, including Fish the fish and Willow the tree. But one day someone new arrived: a bright red ladybug with beautiful black spots.
+
+Frog instantly fell in love but wasn't sure what to do. Then, Frog remembered that ladybugs love flowers. Frog knew what to do.
+
+Frog swam out of the lake. Frog hopped through the grass. Frog climbed up the hill.
+
+Eventually, Frog found some marigolds. Finding the most beautiful, vibrant marigold for the most beautiful ladybug, Frog returned to the lake to give it as a gift to the ladybug.
+
+The ladybug, named Ladybug, was delighted, and the two soon fell deeply in love and lived happily ever after.`,
+    questions:[
+      {q:"Which of the following is irrelevant if writing a summary of the text?",opts:["Frog fell in love.","Willow was a tree.","Frog found a marigold.","They lived happily ever after."],ans:1},
+      {q:"What is a potential form of bias presented in the passage?",opts:["Frog does not fall in love with Fish, which is the other animal that can be in the lake.","While Frog has a plant friend in Willow, Frog also displaces a marigold plant.","Ladybug flies from location to location and doesn't mention any acquaintances.","After Willow meets Ladybug, Willow does not ask Ladybug's name."],ans:0}
+    ]
+  },
+  {
+    title:"Groundhog Day",
+    passage:`On February 2 of each year, the United States observes the unusual holiday of Groundhog Day, a day of hope that winter is over and spring is beginning. This tradition has been officially observed in the U.S. since the 1800s, and is believed to have developed from European folk traditions in which a bear, fox, badger, or even hedgehog would serve as the symbolic meteorologist. Although other cultures and towns observe Groundhog Day (or something similar), the town of Punxsutawney, Pennsylvania takes special pride in being home to the one true forecasting groundhog, Punxsutawney Phil. At the turn of the twentieth century, townspeople formed the Punxsutawney Groundhog Club to perpetuate the joyful rituals and events surrounding Groundhog Day. Over the years, these events have come to include a scavenger hunt, a talent show, and a ball.
+
+Legend has it that on Groundhog Day the official weather forecasting groundhog awakens from hibernation and comes out of his burrow to look for his shadow. If he sees his shadow, six more weeks of winter are to come, and Punxsutawney Phil goes back to bed. However, if he does not see his shadow, Punxsutawney Phil takes this as a sign that spring has arrived, and he remains above ground. Of course, common sense tells us that February 2 is too early for spring to begin, and that while animals may be attuned to various elements of nature from which humans might learn, they are unlikely to act on their instincts based on a schedule set by a Gregorian calendar. Nevertheless, a visit to Pennsylvania to see Punxsutawney Phil and all of the fun he inspires each year might just provide the touch of hope needed to reach the end of winter.`,
+    questions:[
+      {q:"Which of the following pairs of search terms entered into a search engine with the phrase 'Groundhog Day' is likely to produce information about the origin of Groundhog Day?",opts:["Weather and farming","Holiday and festivities","History and folklore","Habitat and diet"],ans:2},
+      {q:"Which of the following evidence from the passage supports the inference that Groundhog Day is an entertaining tradition?",opts:["On February 2 of each year, the United States observes the unusual holiday of Groundhog Day, a day of hope that winter is over and spring is beginning.","Over the years, these events have come to include a scavenger hunt, a talent show, and a ball.","Legend has it that on Groundhog Day the official weather forecasting groundhog awakens from hibernation and comes out of his burrow to look for his shadow.","This tradition has been officially observed in the U.S. since the 1800s and is believed to have developed from European folk traditions."],ans:1},
+      {q:"What source would be most useful in determining the reliability of Punxsutawney Phil's predictions over a number of years?",opts:["A memoir from a member of The Groundhog Club","A historical survey of customs in Pennsylvania","An encyclopedia entry on mammals in the northeast U.S.","A record of weather patterns in the last decade"],ans:3}
+    ]
+  },
+  {
+    title:"Peanut Butter Cookies",
+    passage:`Peanut Butter Cookies — Grandma Harry | 30 minutes | Cookies/Desserts | Makes 1 dozen
+
+Ingredients:
+1 egg white | 3/4 cup sugar | 1 cup peanut butter | 1 teaspoon vanilla | 1/2 cup flour
+
+Directions:
+Beat egg white until foamy. Stir in sugar, beat again until stiff peaks form. Gently fold in peanut butter and vanilla. Add flour in small increments until dough forms. Chill dough for at least 2 hours. Roll into balls, roll in sugar, press down with a fork, and bake at 350°F for 10 to 12 minutes. Let cool on cookie sheet. These are very fragile.`,
+    questions:[
+      {q:"Which of the following conclusions can be taken from the passage?",opts:["The cookies made with this recipe may have been handed down in a family.","The cookies made with this recipe are especially good for midnight snacks.","The cookies made with this recipe would be good to send to college students.","The cookies made from this recipe would be good to serve at a large party."],ans:0},
+      {q:"Which of the following statements about the passage is true?",opts:["Beating egg whites means stirring them vigorously.","Folding in peanut butter must be done with an electric appliance.","These cookies can be cooked in a microwave oven.","These cookies should be cooled on a baking rack."],ans:0}
+    ]
+  }
+];
+
+const STANDALONE_READING = [
+  {q:"The jurors for the trial were randomly selected from a pool. In which of the following sentences does the word 'pool' have the same meaning as the sentence above?",opts:["They looked nervously at the pool of oil under the car.","The group planned to meet at nine o'clock at the pool hall.","The pool of available workers diminished during the summer.","The children had to pool their money to buy ice cream."],ans:2},
+  {q:"Which of the following is the main purpose of a newspaper editorial written in support of education reform?",opts:["To express feelings or ideas","To explain something","To entertain readers","To persuade readers"],ans:3},
+  {q:"A student is researching women's roles in literature. To access a list of sources related to this topic, the student should consult which of the following?",opts:["A thesaurus","An atlas","A biography","A bibliography"],ans:3},
+  {q:"A student reads the above passage in an encyclopedia and wants to learn more about the U.S. Postal Service. In which of the following magazine articles would the student most likely find relevant information about ZIP codes?",opts:["'Postal Code Zones of the U.S. Postal Service'","'The Pony Express: Postal Service of the American Frontier'","'Postmasters General of the U.S. Postal Service'","'Postal Service in the Age of Digital Communication'"],ans:0},
+  {q:"The girl wore headphones to avoid the ceaseless jabber of the other students on the bus. Which of the following is the meaning of the word 'ceaseless' as used in the sentence above?",opts:["Temporary","Periodic","Nonstop","Recurrent"],ans:2},
+  {q:"Although many Americans are dedicated to dieting and healthy eating, they often succumb to the temptation for snacks and desserts. Which of the following is a synonym for 'succumb' as used in the sentence above?",opts:["Supplant","Surrender","Ignore","Deny"],ans:1},
+  {q:"Based on the information contained in the graph (Percentage of Students in Grades 9–12 Who Participate in Choir, by Gender), which of the following statements is most accurate?",opts:["Girls in 9th grade are twice as likely to participate in choir than boys in 10th grade.","In general, total participation in choir is likely to decline each year of high school.","Boys in 11th grade are more likely to participate in choir than any other grade level.","By 12th grade, both boys and girls are less likely to participate in choir."],ans:0,chart:"choir"},
+  {q:"Write all of the letters that are vowels in the order that they appear in the alphabet, including 'Y.' Switch the order of the second and third vowels in the list. Change the fourth and fifth vowels to 'Y.' What does the list of letters look like now?",opts:["AIEYYY","AIEYY","AEIOYY","AEIYY"],ans:0},
+  {q:"Which of the following parts of a paragraph contains the main idea?",opts:["Evidence","Illustration","Thesis","Transition"],ans:2},
+  {q:"Which of the following describes the general function of an index in a publication?",opts:["Provide references used or cited by the author.","Assert the legal rights of the publisher, author, and any other contributors.","Compile an alphabetical list of subjects with accompanying page numbers.","Outline sections of the publication in sequential order."],ans:2},
+  {q:"Without a police car in sight, she felt she had license to drive faster than the speed limit. Which of the following words is a synonym for 'license' as used in the sentence?",opts:["Unacceptable behavior","A document or tag issued by a governing body","Permission or freedom","Deviation from usual form for effect"],ans:2},
+  {q:"According to the DVD connection instructions, which of the following should be done when connecting a DVD player to the television?",opts:["The red, green, and blue cables should be connected between the audio jacks.","The red and white cables should be connected between the video jacks.","The audio cables should be connected to the AUDIO IN jacks on the DVD player.","The video cables should be connected to the VIDEO IN jacks on the TV."],ans:3},
+  {q:"Afterward, the children were trying to talk to their mother at the same time; as a result, they were sent to their rooms despite their excitement. Which of the following phrases from the sentence indicates cause and effect?",opts:["Despite their excitement","At the same time","As a result","Afterward, the children"],ans:2},
+  {q:"The night sky was absolutely luminous; I could see my friend's face. Using clues from the sentence, which of the following is the definition of luminous?",opts:["Lucid","Brilliant","Beautiful","Transparent"],ans:1},
+  {q:"A person facing to the south takes a quarter turn to her left. She then walks 10 paces straight ahead and stops. She rotates 180 degrees and walks another 10 paces straight ahead. After following these directions, this person is:",opts:["in the same place as where she started and is facing west.","in the same place as where she started and is facing east.","20 paces from where she started and is facing east.","20 paces from where she started and is facing west."],ans:0},
+  {q:"Several people became agitated when the line at the grocery store stopped moving. Which of the following is a synonym for the word 'agitated' as used in the sentence?",opts:["Scrupulous","Perturbed","Vigilant","Watchful"],ans:1},
+  {q:"Some might assume that professional artists work infrequently, enjoy endless leisure, and accumulate great wealth, even though this isn't always the case. This disparity can lead to misunderstanding of the work an artist must do to be successful. Which of the following is a synonym for 'disparity' as used in the excerpt?",opts:["Readiness","Similarity","Professionalism","Difference"],ans:3}
+];
+
+const MATH_QUESTIONS=[
+  {q:"Based on data from the table (Left-handed: Male 3, Female 4; Right-handed: Male 29, Female 34), which of the following is the percent of the population in the sample that is left handed?",opts:["11%","9%","10%","7%"],ans:2},
+  {q:"The table represents the men's winning track times at each distance at the 2016 Summer Olympic Games. Which of the following statements best describes the relationship between run distance and winning time?",opts:["On a graph, the slope of the line segment between any two points would be positive.","There is a negative covariance between the two variables.","There is an inverse relationship between the two variables.","Distance of run is the dependent variable, while winning time is the independent variable."],ans:0},
+  {q:"According to the table, which of the following is the relationship between the slices of cake and number of calories? (0 slices=0 cal, 2 slices=960 cal, 5 slices=2400 cal, 11 slices=5280 cal, 19 slices=9120 cal)",opts:["Each slice of cake is 480 calories.","There is a negative relationship between the two variables.","There is no direct relationship between the two variables.","Each slice of cake is 960 calories."],ans:0},
+  {q:"Which of the following is the difference between the mean and the median number of tickets sold at the 5 schools? (Lincoln 200, Jefferson 250, Washington 300, Adams 150, Jackson 275)",opts:["30","15","65","50"],ans:1},
+  {q:"Which of the following represents the probability that a PN or an RN is a female? (County Hospital Staff: PN Male 30, Female 50; RN Male 50, Female 70)",opts:["5/8","7/12","2/5","3/5"],ans:3},
+  {q:"The table below shows a child's height, in inches, on their birthday from birth to age 5. What was the average rate of change per year in the child's height from birth to age 4? (Birth: 20in, Age 1: 26in, Age 2: 33in, Age 3: 39in, Age 4: 42in)",opts:["6 inches per year","5.5 inches per year","6.5 inches per year","3 inches per year"],ans:1},
+  {q:"According to a restaurant's recipe, eight servings of fried rice contain 6 oz of peas. If the relationship of servings to peas remains proportional, how many servings of fried rice would contain 100 oz of peas? (Round to the nearest whole number.)",opts:["75","133","86","102"],ans:1},
+  {q:"Three pools are being drained for the winter. It takes Pool B twice as long to drain compared to Pool A, and it takes Pool B three times as long to drain compared to Pool C. If Pool C drains in 6 hours, which of the following is the number of hours it takes Pool A to drain?",opts:["36","9","1","4"],ans:1},
+  {q:"As the number of hours an employee works increases, the amount of taxes withheld, the amount of retirement savings withheld, and the number of sick leave hours granted increase. Which of the following is the independent variable?",opts:["Amount of taxes withheld","Amount of retirement savings withheld","Number of hours worked","Number of sick leave hours granted"],ans:2},
+  {q:"A grocery store sells milk in half-gallon containers. If 1 cup equals 16 tablespoons and 1 gallon equals 16 cups, which of the following is the number of tablespoons in each half-gallon container?",opts:["32 tablespoons","256 tablespoons","128 tablespoons","64 tablespoons"],ans:2},
+  {q:"Which of the following fractions is between 2/3 and 4/5?",opts:["3/5","5/7","7/8","5/8"],ans:1},
+  {q:"Four friends are sharing a pizza. One friend eats half of the pizza. The other three friends equally divide the rest among themselves. What portion of the pizza did each of the other three friends receive?",opts:["1/6","1/4","1/3","1/5"],ans:0},
+  {q:"Two restaurants have rooms to rent for dinner parties. One restaurant charges $100 to rent a room and $20 per person. The other restaurant charges $25 to rent the room and $25 per person. Which of the following is the number of people for which the cost of a dinner party would be the same at both restaurants?",opts:["15","10","20","25"],ans:0},
+  {q:"A company orders boxed lunches from a nearby deli, which all cost the same price. The relationship between the number of lunches ordered (x) and the total cost in dollars (y) can be represented by a line. If the ordered pair (3, 24) lies on the line, which of the following information can be understood from that point?",opts:["3 lunches cost a total of $24","3 lunches cost $24 each","24 lunches cost a total of $3","24 lunches cost $3 each"],ans:0},
+  {q:"At an ice cream shop, chocolate cones outsell vanilla cones by a ratio of 9 to 4. How many chocolate cones should the owner expect to sell if they sold 72 vanilla cones in one day?",opts:["162 cones","32 cones","77 cones","108 cones"],ans:0},
+  {q:"An employee's number of hours worked and their total earnings has a proportional relationship that can be graphed as a straight line. If the point (7, 157.5) lies on the line of this relationship, which of the following information describes the employee's earnings?",opts:["Manaf has worked for 22.5 hours.","Manaf earns $22.50 per hour.","Manaf earns $7.00 per hour for 157.5 hours.","Manaf earns $157.50 per hour for 7 hours."],ans:1},
+  {q:"An individual wishes to sell her home. The home was originally listed for $200,000, but the price has been lowered to $180,000. Which of the following is the percent decrease in the listed price of the home?",opts:["22%","11%","10%","20%"],ans:2},
+  {q:"If x is the width of a rectangle and the expression '2x + 5' describes the length, which of the following phrases accurately restates the expression?",opts:["Five more than twice the width","Five times the sum of two and the width","Two more than five times the width","Two times the sum of five and the width"],ans:0},
+  {q:"A customer at a restaurant receives a bill for $43.20. The customer wants to leave a 15% gratuity. Which of the following is the total amount the customer will pay?",opts:["$47.52","$4.32","$49.68","$6.48"],ans:2},
+  {q:"A group of students wants to sell T-shirts as a fundraiser. To manufacture the T-shirts, it will cost the students a one-time fee of $150, plus $5 for each T-shirt sold. They plan to sell the T-shirts for $12 each. Which of the following equations correctly describes Y, the number of dollars raised, in terms of x, the number of T-shirts sold?",opts:["Y = (12x - 150) + 5x","Y = 12x - (5x + 150)","Y = 150 - (12x - 5x)","Y = (150 + 5x) - 12x"],ans:1},
+  {q:"A car rental company charges $23 per day and $0.42 per mile to rent a car. Which of the following is the total bill if a car is rented for 3 days and is driven 125 miles?",opts:["$70.26","$226.50","$121.50","$75.50"],ans:2},
+  {q:"An employee at a marketing firm makes $2,586.00 a month. Of that amount, $517.20 is deducted for insurance, $299.33 is withheld for federal taxes, $156.69 goes to social security, and $99.77 is withheld for state taxes. Which of the following is the employee's monthly take home pay?",opts:["$2,068.80","$3,658.99","$1,072.99","$1,513.01"],ans:3},
+  {q:"Which of the following digits is in the tens place in 12.34?",opts:["1","4","2","3"],ans:0},
+  {q:"Which of the following values of x satisfies the equation (-x + 36) + 5 = 10?",opts:["14","-14","34","-34"],ans:1},
+  {q:"At a used car dealership, the first determinant in the price of a car is the model, followed by the mileage and age of the car. Which of the following is the dependent variable?",opts:["Mileage","Price","Age","Model"],ans:1},
+  {q:"Identify the order of the following values from least to greatest: 70%, 5/7, 3/4, 0.79",opts:["5/7, 70%, 3/4, 0.79","70%, 5/7, 3/4, 0.79","3/4, 0.79, 5/7, 70%","0.79, 3/4, 5/7, 70%"],ans:0},
+  {q:"Place the values of the given expressions in ascending order (smallest to largest): (1.8)(0.5), 1.8 - 0.5, 1.8 + 0.5, 1.8 + (2)(0.5), 1.8 ÷ 0.5",opts:["(1.8)(0.5), 1.8-0.5, 1.8+0.5, 1.8+(2)(0.5), 1.8÷0.5","1.8-0.5, (1.8)(0.5), 1.8+0.5, 1.8+(2)(0.5), 1.8÷0.5","1.8÷0.5, 1.8+(2)(0.5), 1.8+0.5, 1.8-0.5, (1.8)(0.5)","(1.8)(0.5), 1.8+0.5, 1.8-0.5, 1.8+(2)(0.5), 1.8÷0.5"],ans:0},
+  {q:"For each inch of a tube's diameter, 3.2 inches of tape is needed to wrap the tube. How much tape is needed to wrap a tube with a diameter of 5 inches?",opts:["13.2 inches","8.2 inches","16 inches","15 inches"],ans:2},
+  {q:"If the recommended dose of a medicine for a child who weighs 50 lb is 20 mg, then which of the following would be the recommended dose for a child who weighs 35 lb?",opts:["8.75 mg","14 mg","28.57 mg","5 mg"],ans:1},
+  {q:"It is 41 degrees Fahrenheit outside. Using the formula C = 5/9(F - 32), which of the following is the temperature in degrees Celsius? (Round to the nearest integer.)",opts:["16","-9","5","106"],ans:2},
+  {q:"The population of a type of bacteria is initially 1,000. The number of bacteria doubles every 3 days. How many bacteria will there be after 9 days?",opts:["5,000","8,000","4,000","3,000"],ans:1},
+  {q:"A recipe calls for 2.5 teaspoons of vanilla. 1 teaspoon equals approximately 4.93 mL. Which of the following is the correct amount of vanilla in mL?",opts:["12.325 mL","7.43 mL","5.33 mL","0.507 mL"],ans:0},
+  {q:"Which of the following is the area of the largest circle that can fit entirely inside a rectangle that measures 8 centimeters by 10 centimeters?",opts:["16π cm²","18π cm²","8π cm²","10π cm²"],ans:0},
+  {q:"A teacher has asked all the students in the class which days of the week they get up after 8 a.m. Which of the following is the best way to display the frequency for each day of the week?",opts:["Bar graph","Histogram","Scatterplot","Pie graph"],ans:0},
+  {q:"There are six boxes of juice in a package. If there will be 38 people at a picnic and each person will drink three boxes of juice, which of the following is the best estimate of the number of packages of juice needed?",opts:["15 packages","10 packages","25 packages","20 packages"],ans:3},
+  {q:"Which of the following statements describes an inverse relationship?",opts:["As the number of credit hours decreases, the cost per credit hour decreases.","As the number of credit hours increases, the cost per credit hour decreases.","As the number of credit hours increases, the cost per credit hour remains the same.","As the number of credit hours increases, the cost per credit hour increases."],ans:1},
+  {q:"Which of the following values is the greatest?",opts:["4.25","10/3","4.4","9/2"],ans:3},
+  {q:"Which of the following is the mean of the data in the table? (1.34, 0.18, 2.1, 0.77, 1.41)",opts:["1.92","1.34","1.16","2.1"],ans:2}
+];
+
+const SCIENCE_QUESTIONS=[
+  {q:"Which of the following substances is excreted by sweat glands in response to the breakdown of proteins and the formation of ammonia?",opts:["Urea","Sebum","Water","Lysozymes"],ans:0},
+  {q:"Nucleotides that contain the sugar ribose are found in which of the following?",opts:["ATP","DNA","RNA","GMP"],ans:2},
+  {q:"The valence of atoms in a group (column) in the periodic table:",opts:["increases from top to bottom.","decreases from top to bottom.","remains unchanged.","changes unpredictably."],ans:2},
+  {q:"In which of the following organs does fertilization occur?",opts:["Ovaries","Vagina","Uterus","Fallopian tubes"],ans:3},
+  {q:"In which of the following states will carbon dioxide occupy the least volume?",opts:["Plasma","Liquid","Gas","Solid"],ans:3},
+  {q:"Which of the following processes causes most of the carbon dioxide from the blood to move into the alveoli?",opts:["Conversion to carbon monoxide","Diffusion down a concentration gradient","Active transport using energy","Passive transport using carrier proteins"],ans:1},
+  {q:"The basal body is a structure associated with which of the following parts of a cell?",opts:["Mitochondria","Nucleus","Ribosome","Flagella"],ans:3},
+  {q:"Which of the following is the physiological function of Dermcidin and cathelicidin?",opts:["Digestive enzymes","Antimicrobial peptides","Neurotransmitters","Chemical messengers"],ans:1},
+  {q:"Which of the following hormones is responsible for regulating sodium reabsorption in the kidneys?",opts:["Calcitriol","Thyroxine","Erythropoietin","Aldosterone"],ans:3},
+  {q:"A physicist claims to have developed friction-free tires for cars. Which of the following problems would result from using these tires?",opts:["The tread on the tires will wear down quickly.","The tires will not stay attached to the car.","The tires will levitate off the road surface.","The tires will not be able to roll or stop."],ans:3},
+  {q:"Which of these pathogens is typically transmitted by biting fleas carried by infected rats?",opts:["Corynebacterium diphtheriae","Neisseria meningitidis","Plasmodium falciparum","Yersinia pestis"],ans:3},
+  {q:"Which of the following statements describes changes in the tubes that conduct air from the primary bronchi toward the bronchioles in the lungs?",opts:["Cilia become more plentiful.","Cartilage rings become larger.","Epithelial layer gets thinner.","Tube diameter increases."],ans:2},
+  {q:"Which of the following substances in the blood increases when parathyroid hormone is released?",opts:["Potassium","Calcium","Iron","Sodium"],ans:1},
+  {q:"Achondroplasia, a form of dwarfism, is an autosomal dominant disorder. Homozygous achondroplasia is fatal within the first year of life. Which of the following is the genotype of an adult who has achondroplasia?",opts:["Aa","XAY","AA","aa"],ans:0},
+  {q:"Which of the following describes a direct effect of histamine on blood vessels?",opts:["Causes blood vessels to constrict","Decreases the amount of smooth muscle in blood vessels","Increases the amount of smooth muscle in blood vessels","Causes blood vessels to dilate"],ans:3},
+  {q:"Parasitic worm infestation is hypothesized to be damaging to the host. However, scientists have recently discovered that worm infestation can relieve the effects of certain autoimmune disorders. In which of the following ways should the hypothesis be modified, given the new findings?",opts:["Worm infestation reduces the severity of certain autoimmune disorders.","Lack of worm infestations is the cause of some autoimmune disorders.","Worm infestation prevents the body from immune malfunction.","Worm infestations exacerbate the body's immune reactions."],ans:0},
+  {q:"While playing basketball, a player injures her Achilles tendon. Which of the following types of tissue was injured?",opts:["Epithelial","Muscle","Nervous","Connective"],ans:3},
+  {q:"Which of the following is the primary function of red blood cells?",opts:["Responding to antigens","Helping create blood clots","Fighting infection in the body","Carrying oxygen to other body cells"],ans:3},
+  {q:"Which of the following is the function of the nephron glomerulus?",opts:["Produces a filtrate that is then processed by the renal tubule","Responds to presence of ADH to control water reabsorption and produce a concentrated urine","Allows K+, Na+ and Cl- to move out of the filtrate through both active and passive transport","Reabsorbs water into the blood that increases blood pressure"],ans:0},
+  {q:"During cell division, spindle fibers attach to which of the following chromosomal structures?",opts:["Histone","Gene","Centromere","Nucleosome"],ans:2},
+  {q:"Which of the following glands produces an oily substance that lubricates the hair and skin?",opts:["Apocrine","Sebaceous","Eccrine","Sudoriferous"],ans:1},
+  {q:"A species of beetle is brown and lives only on brown trees. Sometimes, genetic mutation results in a few white beetles, but they are quickly eaten by birds. If all the trees in the forest were painted white, which of the following would be the most likely outcome?",opts:["Brown beetles would become extinct from the population.","The brown beetles would lay more white beetle eggs.","The brown beetles would turn white.","The population of white beetles would increase."],ans:3},
+  {q:"Which of the following tools is used to measure pressure?",opts:["Otoscope","Manometer","Stethoscope","Cannula"],ans:1},
+  {q:"If a portion of a strand of DNA bases reads 5' AGCTAGCGT 3', what would the sequence of bases on the complementary strand read?",opts:["3' TCGATCGCA 5'","5' TCGUTCGCU 3'","3' AGCTAGCGT 5'","5' UCGAUCGCA 3'"],ans:0},
+  {q:"Which of the following structures is present in both prokaryotic and eukaryotic cells?",opts:["Cell membrane","Golgi apparatus","Chloroplast","Endoplasmic reticulum"],ans:0},
+  {q:"Which of the following structures is responsible for storing and releasing calcium ions that control the contraction-relaxation cycle of skeletal muscle?",opts:["Troponin complex","Myosin filaments","Sarcoplasmic reticulum","Cellular cytoskeleton"],ans:2},
+  {q:"Which of the following is an example of a cell differentiating?",opts:["A pancreatic cell producing and releasing a hormone into the blood","A stem cell maturing to become a muscle cell that can contract","A stomach cell acquiring a mutation that alters a digestive enzyme","A muscle cell producing more ATP to meet the energy demands of exercising"],ans:1},
+  {q:"Which of the following is correct regarding the pH scale?",opts:["A substance with a pH of 3 is two times more alkaline than a substance with a pH of 4.","A substance with a pH of 3 is 10 times more acidic than a substance with a pH of 4.","A substance with a pH of 3 is two times more acidic than a substance with a pH of 4.","A substance with a pH of 3 is 10 times more alkaline than a substance with a pH of 4."],ans:1},
+  {q:"Which of the following can digest an enzyme?",opts:["Lipases","Kinases","Endonucleases","Proteases"],ans:3},
+  {q:"Which of the following structures is severed and tied off as part of a vasectomy procedure?",opts:["Seminal vesicle","Testes","Vas deferens","Epididymis"],ans:2},
+  {q:"Which of the following describes the nodes of Ranvier?",opts:["Degraded myelin surrounding the axon of a neuron","Gaps between Schwann cells wrapping the axon of a neuron","Sodium gates at the axon terminals of a neuron","Spaces between post and presynaptic neurons"],ans:1},
+  {q:"Which of the following digestive system structures releases sodium bicarbonate into the small intestine, resulting in a change in the pH of chyme from acidic to basic?",opts:["Gallbladder","Appendix","Pancreas","Liver"],ans:2},
+  {q:"Which of the following is an example of the adhesive property of water?",opts:["Raindrops stick to the outside of a window.","Water molecules support the weight of a small insect.","Water and oil separate into two distinct layers.","Small water droplets cling together to make one large water droplet."],ans:0},
+  {q:"Which of the following components of a nucleotide determines whether the nucleotide is considered a pyrimidine or purine?",opts:["Phosphate","Nitrogen base","Ribose sugar","Deoxyribose sugar"],ans:1},
+  {q:"A scientist wants to determine if solutes from a new drug formulation, taken orally, all enter the bloodstream. Which of the following samples would best show if this is the case?",opts:["Lymph","White blood cells","Plasma","Bone marrow"],ans:2},
+  {q:"Which of the following meiosis events produce genetically different daughter cells?",opts:["Crossing over of homologous chromosomes","Condensation of chromosomes during prophase","Dissolution of nuclear membrane","Separation of sister chromatids"],ans:0},
+  {q:"The perineum describes which of the following triangular areas of the human body?",opts:["The area that contains the orifices of the urinary, digestive, and reproductive systems.","The area on the back between the neck and the two shoulder blades.","The area between the edges of the eyes and the chin.","The area between the nipples on the chest and the belly button."],ans:0},
+  {q:"S and O are in the same periodic group and share chemical properties, but H2S is a gas at room temperature, and H2O is a liquid. Which of the following is the main reason for this?",opts:["H2S has stronger intermolecular bonds than H2O.","H2S has stronger ionic bonds than H2O.","H2O has stronger ionic bonds than H2S.","H2O has stronger intermolecular bonds than H2S."],ans:3},
+  {q:"Which of the following is the first step a researcher should take before experimentation begins?",opts:["Apply the units of the SI system.","Select laboratory equipment.","Generate a hypothesis.","Design experimental procedures."],ans:2},
+  {q:"Which of the following lists the order of tissues in the gastrointestinal tract, from the innermost layer to the outermost layer?",opts:["Mucosa, submucosa, muscularis, serosa","Muscularis, serosa, mucosa, submucosa","Submucosa, mucosa, serosa, muscularis","Serosa, mucosa, submucosa, muscularis"],ans:0},
+  {q:"Which of the following is generally expected to be true about birth rates in relation to death rates for a country with a growing population and high infant mortality?",opts:["Higher birth rates than death rates","Birth rates equal to death rates","Birth rates lower than death rates","Birth rates variable compared to death rates"],ans:0},
+  {q:"Endemic goiter is caused by hypertrophy of the thyroid due to a lack of iodine in the diet. Which of the following is a related physical symptom that could be observed in patients?",opts:["Fat deposition leading to a rounded face","Enlarged hands and feet","Increased frequency of bone fractures","Swelling of the neck"],ans:3},
+  {q:"A student is comparing four different types of cells and observes that one contains many more mitochondria than the others. Which of the following conclusions should the student make?",opts:["The cells are epidermal cells.","The cells are muscle cells.","The cells are fat cells.","The cells are sebaceous gland cells."],ans:1},
+  {q:"Which of the following is a function of the integumentary system?",opts:["Storage of fat","Production of antibodies","Release of minerals","Absorption of water"],ans:0},
+  {q:"Which of the following describes how the carbonic acid bicarbonate blood buffer system responds when an alkaline substance enters the blood stream?",opts:["Hydrogen ions (H+) released from carbonic acid neutralizes hydroxide ions (OH-) to raise blood pH.","Hydroxide ions (OH-) released from bicarbonate ions (HCO3-) neutralizes hydrogen ions (H+) to resist change in blood pH.","Hydrogen ions (H+) released from carbonic acid neutralizes hydroxide ions (OH-) to resist change in blood pH.","Hydroxide ions (OH-) released from bicarbonate ions (HCO3-) neutralizes hydrogen ions (H+) to raise blood pH."],ans:2},
+  {q:"Which of the following units should be used to measure the volume of a blood sample?",opts:["Milliliters","Centimeters","Milligrams","Millimeters"],ans:0},
+  {q:"Which of the following number of electrons are found in a boron atom with an atomic number of 5 and a mass number of 11?",opts:["11","5","16","6"],ans:1},
+  {q:"Which of the following organelles is enriched in skeletal muscle cells?",opts:["Mitochondria","Lysosomes","Golgi bodies","Centrioles"],ans:0},
+  {q:"Which of the following is true regarding the structure of atoms?",opts:["Isotopes of an element differ in the number of protons in the nucleus.","The amount of charge on a proton is greater than the amount of charge on an electron.","The neutrons make up a significant part of the atomic mass.","The mass of each electron is the same as the mass of each proton."],ans:2},
+  {q:"Pepsin, which speeds up the breakdown of proteins, is classified as:",opts:["a carbohydrate.","a nucleic acid.","a lipid.","an enzyme."],ans:3}
+];
+
+const ENGLISH_QUESTIONS=[
+  {q:"The above is an internal memo from the head of a web development team. Which of the following words or phrases are informal within a business context? (Select all that apply — choose the best answer)",opts:["website","playing firefighter, a whole bunch, Hey gang!","going forward","take a sec"],ans:1},
+  {q:"Which of the following best describes the first step a company should take in writing a lawn mowing proposal for a local pharmacy when they have access to the square footage of the area to be mowed, the grass type, last year's winning bid, and a list of other licensed lawn mowing companies?",opts:["Analyzing the information","Revising the draft","Submitting the document","Writing the proposal"],ans:0},
+  {q:"Which of the following sentences is correctly punctuated?",opts:["Its time for us to go home.","The dog brought us it's bone.","It's a small world.","I think its cold outside."],ans:2},
+  {q:"Place the following sentences into a well-organized paragraph in the correct order: (1) The movie titled 'District 9' deserves more critical acclaim for serving as a powerful metaphor for current societal issues. (2) To begin with, the setting is distinct, yet all too familiar. (3) By choosing Johannesburg, South Africa, for filming, the movie gives viewers a glimpse of the reality of what remains of apartheid. (4) Although the creatures left to rot in slums are alien in nature, we see something distinctly human in their plight. (5) In conclusion, despite being more than a decade old, 'District 9' deserves a revisit for its underrated critique of various forms of oppression, namely racism.",opts:["1, 2, 3, 4, 5","2, 3, 4, 1, 5","3, 1, 2, 4, 5","1, 3, 2, 5, 4"],ans:0},
+  {q:"Which of the following is the final step of the writing process?",opts:["Editing","Interviewing","Drafting","Researching"],ans:0},
+  {q:"Which of the following sentences correctly follows the rules of capitalization?",opts:["The Geography students took a class trip to the Rocky Mountains.","The A1 Plumbing Board of Directors gave every employee a raise.","Even though he moved to New York, he was born in a Western town.","I plan to enroll in College next year."],ans:0},
+  {q:"Which part of a paragraph best describes the sentence below? 'In summation, there should be an equal rights amendment because women are most likely to experience workplace discrimination and lower wages.'",opts:["Concluding statement","Opening statement","Supporting detail","Source citation"],ans:0},
+  {q:"According to our instructor, the book that I found was her's. She told me, however, that she didn't want it back. Which of the following is an error in the sentences above?",opts:["Improper use of a comma after the word 'instructor'","Improper use of commas around the word 'however'","Improper use of an apostrophe in the contraction 'didn't'","Improper use of an apostrophe in the word 'her's'"],ans:3},
+  {q:"Which of the following is a complete sentence?",opts:["Jumping over the sidewalk cracks.","Walks slowly around her neighbor's house.","Running until you finish.","He quickly jogs to his car."],ans:3},
+  {q:"Which of the following is a complete sentence?",opts:["Running through the park before breakfast.","Walking with a limp as a result of the thorn.","I walked all three dogs around the park this morning.","When I was young and loved going for runs in the park."],ans:2},
+  {q:"Which of the following prefixes can be added to the root 'vent' to mean 'go around'?",opts:["in-","circum-","pre-","con-"],ans:1},
+  {q:"Which of the following statements requires a citation?",opts:["The sun rises in the east and sets in the west.","A nickname often used for Mars is the red planet.","The surface temperature of Mars is increasing every year.","Jupiter is the largest planet in our solar system."],ans:2},
+  {q:"Which of the following sentences is correctly punctuated?",opts:["Sallys' and Emmas' dresses were flattering.","Sally's dress was made of beautiful satin.","Sallys' dresses were blue and red.","Sally and Emma both bought their dress design's from a fashion magazine."],ans:1},
+  {q:"Which of the following sentences correctly uses apostrophes?",opts:["My grandparents's families are coming to town for the holidays.","There are many parks' located across the country.","All of the womens thing's were lost at sea.","Our home's roof needs repairing."],ans:3},
+  {q:"Taken from a book review, which of the following sentences is written in formal language?",opts:["Is this plot sophomoric and predictable? Well, duh!","You can't tell the difference between characters because they're so dang identical.","This book is not recommended for readers who have the desire to be entertained.","The author takes the unsuspecting reader on some kind of unfunny joy ride."],ans:2},
+  {q:"When it is too hot to work outside, I like to sit inside and read a book, but sometimes I play with the cat. Which of the following is the coordinating conjunction in this sentence?",opts:["When","And","But","With"],ans:2},
+  {q:"After studying the disease for years scientists have identified the agents that cause it but they haven't found a cure for it. Which of the following options punctuates this sentence correctly?",opts:["After, studying the disease for years, scientists have identified the agents, that cause it, but they haven't found a cure for it.","After studying the disease for years; scientists have identified the agents that cause it, but they haven't found a cure for it.","After studying the disease for years, scientists have identified the agents that cause it, but they haven't found a cure for it.","After studying the disease for years scientists have identified the agents that cause it, but they haven't found a cure for it."],ans:2},
+  {q:"A professor requires at least two qualified peer reviews of a research paper from students within the field. Which of the following methods is best to find peer reviewers who meet the criteria?",opts:["Enter the criteria in a social media search field to determine who is nearby.","Approach students outside the building where most of the general education courses are completed.","Wait for the thesis review conference at the end of the semester.","Contact the campus writing center to inquire about student reviewers in the field."],ans:3},
+  {q:"Which one of the following sentences contains a dangling modifier?",opts:["My brother had an old truck that sat by the garage that needed paint.","Drivers in our state are confused by the outdated driving law.","The contented puppy sat by the sleeping young child.","Adequate lighting is important for anyone who is studying or reading."],ans:0},
+  {q:"Which of the following would not need a citation?",opts:["The thesis of the paper placed at the end of the introductory paragraph.","The mention of a theory that contradicts your view within the research section.","A summary of other research completed within the past 20 years on the topic.","A chart with statistical data that correlates to your research placed in the appendix."],ans:0},
+  {q:"In the word 'circumnavigation,' the Latin prefix 'circum' means to move in which of the following directions?",opts:["Sideways","Forward","Up","Around"],ans:3},
+  {q:"Which sentence correctly follows the rules of spelling?",opts:["\"It's a new day for America,\" declared the newly elected senator.","\"Its only a matter of time before our competitor makes gains in the market,\" said the sales director.","When the emergency room reaches capacity, its' stressful for both staff and patients.","Italy is known for it's delicious pastries, cheese, and cured meats."],ans:0},
+  {q:"Which of the following sentences is written in informal language?",opts:["Correct business attire includes clothing that is mended, laundered, and pressed.","Let's all agree from now on to dress for success, not a middle school sleepover.","This is a reminder that the dress code is intended to ensure harmony and professionalism.","Employees have, in recent months, begun ignoring important parts of the dress code."],ans:1},
+  {q:"Which of the following steps in the writing process must happen first?",opts:["Researching for credible and relevant sources","Understanding the prompt or writing assignment","Planning and brainstorming for the writing's structure and topics","Revising and editing focusing on the clarity of the writing"],ans:1},
+  {q:"Which of the following would be an introductory sentence for a paragraph about autism spectrum disorder?",opts:["Over time, early diagnosis and intervention has ensured individuals on the autism spectrum can access appropriate support.","Increased understanding has fostered more inclusive environments in schools, workplaces, and communities.","Now, more individuals across a wide range of disciplines recognize and incorporate simple, yet effective, accommodations for people with ASD.","A dramatic rise in autism awareness since 1990 has led to increased recognition and understanding of the neurodevelopment disorder within society."],ans:3},
+  {q:"Based on an analysis of word parts, which of the following affixes, if added to the nonsense root word 'amell', would make the word have an opposite meaning?",opts:["Disamell","Monoamell","Extramell","Interamell"],ans:0},
+  {q:"Which of the following options contains formal, rather than informal language?",opts:["Where are we meeting?","What's it all about?","Where'd this thing come from?","What's this stuff for?"],ans:0},
+  {q:"The students stood before the principle, who was known for her strict views on plagiarism, and hoped that their promise to retake the course would earn them a break. Which of the following homophones should be used to correct the error in the sentence above?",opts:["Coarse","Brake","There","Principal"],ans:3},
+  {q:"1. It has never been more true to say that a dog is a man's best friend. 2. In response, the dog bit the intruder who was attacking his owner. 3. Last Tuesday night, a dog and his owner were asleep in their home. 4. An intruder broke into the house in the early hours of the morning. Using the sentences above, which of the following sentence orders best forms an organized, logical paragraph?",opts:["3, 1, 2, 4","3, 4, 2, 1","1, 3, 2, 4","1, 2, 4, 3"],ans:1},
+  {q:"The root 'lit' means letter, root, or word. Based on an analysis of affixes, which of the following means 'unable to read or write'?",opts:["Preliterate","Illiterate","Alliteration","Obliterate"],ans:1},
+  {q:"Which of the following choices is free from slang?",opts:["Do you want to grab some grub at the new restaurant downtown?","Why are you always late to your third hour class?","Sorry I ghosted you last night and left you on read! I fell asleep.","The concert is next Friday. It's going to be lit!"],ans:1},
+  {q:"She was a big baseball fan, and her prized possession was her __________. Which of the following completes this sentence with correct capitalization?",opts:["Kansas City Royals Jersey","Kansas City Royals jersey","Kansas City royals jersey","Kansas city Royals jersey"],ans:1},
+  {q:"Irresistible. For the given word, which of the following pairs represent the closest meanings for the prefix and suffix?",opts:["Again, able to be","Again, a form of","Not, a form of","Not, able to be"],ans:3},
+  {q:"Which of the following sentences correctly follows the rules of punctuation?",opts:["Francis Scott Key was an American lawyer; author; and amateur poet from Georgetown, who wrote the lyrics to the United States' national anthem.","Francis Scott Key was an American lawyer, author, and amateur poet from Georgetown; who wrote the lyrics to the United States' national anthem.","Francis Scott Key was an American lawyer, author, and amateur poet from Georgetown, who wrote the lyrics to the United States' national anthem.","Francis Scott Key was an American lawyer author and amateur poet from Georgetown, who wrote the lyrics to the United States' national anthem."],ans:2},
+  {q:"Which of the following is a simple sentence?",opts:["Marissa refuses to apologize; however, she knows she was unfair to her sister.","Not only does Antonio know American Sign Language, he can also read lips.","The entire senior class went to the football game; therefore, the stadium was packed.","Quantum physics is Juan's best subject."],ans:3},
+  {q:"Which of the following sentences is punctuated correctly?",opts:["I was at the mall yesterday when I met some friends. \"Hey,\" what are you doing here I asked?","I was at the mall yesterday when I met some friends. \"Hey, what are you doing here?\" I asked.","I was at the mall yesterday when I met some friends. \"Hey, what are you doing here,\" I asked?","I was at the mall yesterday when I met some friends, \"Hey, what are you doing here,\" I asked."],ans:1},
+  {q:"Which of the following statements would a teacher provide as personalized feedback to an elementary school student?",opts:["Matthew is zoned for East Elementary School.","Matthew is in the third grade.","Matthew accepts redirection well.","Matthew rides the local bus to school."],ans:2}
+];
+
+// ─── BUILD ────────────────────────────────────────────────────────────────────
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildQuestions(){
+  const list=[];
+  READING_GROUPS.forEach(g=>{
+    shuffle([...g.questions]).forEach(q=>list.push({subject:"Reading",passage:g.passage,passageTitle:g.title,chart:null,...q}));
+  });
+  shuffle([...STANDALONE_READING]).forEach(q=>list.push({subject:"Reading",passage:null,passageTitle:null,...q}));
+  shuffle([...MATH_QUESTIONS]).forEach(q=>list.push({subject:"Math",passage:null,passageTitle:null,chart:null,...q}));
+  shuffle([...SCIENCE_QUESTIONS]).forEach(q=>list.push({subject:"Science",passage:null,passageTitle:null,chart:null,...q}));
+  shuffle([...ENGLISH_QUESTIONS]).forEach(q=>list.push({subject:"English",passage:null,passageTitle:null,chart:null,...q}));
+  return list;
+}
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let questions,current,selected,confirmed,score,wrong,subjectScores,answers;
+let showingSectionEnd=false,sectionEndSubject=null;
+let examComplete=false;
+let explanations={}; // cache: question index -> explanation text
+
+function init(){
+  questions=buildQuestions();
+  current=0;selected=null;confirmed=false;
+  score=0;wrong=0;
+  showingSectionEnd=false;sectionEndSubject=null;
+  examComplete=false;
+  explanations={};
+  answers=new Array(questions.length).fill(null);
+  subjectScores={Reading:{c:0,w:0},Math:{c:0,w:0},Science:{c:0,w:0},English:{c:0,w:0}};
+  updateSidebar();render();
+}
+
+function restartQuiz(){
+  init();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ─── NAV ──────────────────────────────────────────────────────────────────────
+function jumpToFinal(){
+  if(!examComplete)return;
+  showingSectionEnd=false;
+  sectionEndSubject=null;
+  current=questions.length;
+  render();
+}
+
+function jumpToSubject(sub){
+  const idx=questions.findIndex(q=>q.subject===sub);
+  if(idx<0)return;
+  // If this section is fully completed, show its results screen instead
+  if(subjectDone(sub)){
+    showingSectionEnd=true;
+    sectionEndSubject=sub;
+    // Position current at the first question of the NEXT section (or end), so "Continue" works correctly
+    const nextIdx=questions.findIndex((q,i)=>i>idx && q.subject!==sub);
+    current=nextIdx>=0?nextIdx:questions.length;
+    render();
+    return;
+  }
+  showingSectionEnd=false;
+  sectionEndSubject=null;
+  current=idx;
+  selected=answers[current];
+  confirmed=answers[current]!==null;
+  render();
+}
+
+function subjectStart(sub){return questions.findIndex(q=>q.subject===sub);}
+function subjectEnd(sub){
+  let last=-1;
+  questions.forEach((q,i)=>{if(q.subject===sub)last=i;});
+  return last;
+}
+function subjectDone(sub){
+  const end=subjectEnd(sub);
+  return end>=0 && answers[end]!==null;
+}
+
+function updateSidebar(){
+  const viewingFinal = examComplete && !showingSectionEnd && current>=questions.length;
+  SUBJECT_ORDER.forEach(s=>{
+    const btn=document.getElementById('nav-'+s);
+    if(!btn)return;
+    btn.className='nav-btn';
+    let activeSub;
+    if(viewingFinal){
+      activeSub=null;
+    }else if(showingSectionEnd){
+      activeSub=sectionEndSubject;
+    }else if(current<questions.length){
+      activeSub=questions[current].subject;
+    }else{
+      activeSub=null;
+    }
+    if(s===activeSub)btn.className+=' active';
+    else if(subjectDone(s))btn.className+=' done';
+  });
+  const finalBtn=document.getElementById('nav-Final');
+  if(finalBtn){
+    if(examComplete){
+      finalBtn.style.display='';
+      finalBtn.className='nav-btn'+(viewingFinal?' active':' done');
+    }else{
+      finalBtn.style.display='none';
+    }
+  }
+  const hbadge=document.getElementById('hbadge');
+  if(hbadge){
+    if(viewingFinal)hbadge.textContent='Final Results';
+    else if(showingSectionEnd)hbadge.textContent=sectionEndSubject+' Results';
+    else if(current<questions.length)hbadge.textContent=questions[current].subject;
+  }
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function subjectProgress(){
+  if(current>=questions.length)return{num:0,total:0};
+  const sub=questions[current].subject;
+  const all=questions.filter(q=>q.subject===sub);
+  const done=questions.slice(0,current).filter(q=>q.subject===sub).length;
+  return{num:done+1,total:all.length};
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render(){
+  updateSidebar();
+  const app=document.getElementById('app');
+  if(showingSectionEnd){renderSectionEnd(app);return;}
+  if(current>=questions.length){renderFinal(app);return;}
+  const q=questions[current];
+  const sp=subjectProgress();
+  const prog=Math.round(((sp.num-1)/sp.total)*100);
+
+  // passage
+  let passageHtml='';
+  if(q.passage){
+    passageHtml=`<div class="passage-box"><div class="passage-title">${esc(q.passageTitle)}</div><div class="passage-text">${esc(q.passage)}</div></div>`;
+  }
+  // chart
+  let chartHtml='';
+  if(q.chart==='choir'){
+    chartHtml=`<div class="chart-wrap"><div class="chart-title">Percentage of Students in Grades 9–12 Who Participate in Choir, by Gender</div>${choirChartSVG()}</div>`;
+  }
+
+  // options
+  let optsHtml=q.opts.map((o,i)=>{
+    let cls='option-btn';
+    if(confirmed){if(i===q.ans)cls+=' correct';else if(i===selected&&i!==q.ans)cls+=' incorrect';}
+    else if(i===selected)cls+=' selected';
+    return`<button class="${cls}" ${confirmed?'disabled':''} onclick="pick(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`;
+  }).join('');
+
+  let feedbackHtml='';
+  if(confirmed){
+    const isCorrect=selected===q.ans;
+    const feedbackClass=isCorrect?'feedback right':'feedback wrong';
+    const feedbackMsg=isCorrect
+      ?`&#10003; Correct!`
+      :`&#10007; Incorrect. The correct answer is: <strong>${String.fromCharCode(65+q.ans)}. ${esc(q.opts[q.ans])}</strong>`;
+
+    let explanationHtml='';
+    if(explanations[current]==='loading'){
+      explanationHtml=`<div class="explanation-box"><div class="explanation-loading"><span class="exp-spinner"></span> Generating explanation…</div></div>`;
+    }else if(explanations[current]){
+      explanationHtml=`<div class="explanation-box"><div class="explanation-title">&#128218; Why this is the correct answer</div><div class="explanation-text">${explanations[current]}</div></div>`;
+    }
+
+    feedbackHtml=`<div class="${feedbackClass}">${feedbackMsg}</div>${explanationHtml}`;
+  }
+
+  const isLast=current===questions.length-1;
+  let nextLabel=confirmed?(isLast?'See Results':'Next Question &#8594;'):'';
+
+  const backDisabled=current===0?'disabled':'';
+
+  app.innerHTML=
+    `<div class="progress-wrap">
+       <div class="progress-label"><span>Question ${sp.num} of ${sp.total}</span><span>${prog}%</span></div>
+       <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${prog}%"></div></div>
+     </div>`+
+    passageHtml+chartHtml+
+    `<p class="q-text">${esc(q.q)}</p>`+
+    optsHtml+feedbackHtml+
+    `<div class="btn-row">
+       <button class="btn-back" onclick="goBack()" ${backDisabled}>&#8592; Back</button>
+       ${!confirmed
+         ?`<button class="btn-primary" onclick="confirm_ans()" ${selected===null?'disabled':''}>Confirm</button>`
+         :`<button class="btn-secondary" onclick="next()">${nextLabel}</button>`}
+     </div>`;
+}
+
+function renderSectionEnd(app){
+  const sub=sectionEndSubject;
+  // Collect this section's items
+  const items=[];
+  let c=0,w=0;
+  questions.forEach((q,i)=>{
+    if(q.subject!==sub)return;
+    const a=answers[i];
+    if(a===null)return;
+    const correct=a===q.ans;
+    if(correct)c++;else w++;
+    items.push({q:q.q,opts:q.opts,ans:q.ans,given:a,correct});
+  });
+  const total=c+w;
+  const pct=total>0?Math.round((c/total)*100):0;
+  const color=pct>=80?'#1a6b4a':pct>=60?'#1a4db0':'#a02020';
+
+  const rows=items.map(it=>{
+    const icon=it.correct?'<span class="ri-icon c">&#10003;</span>':'<span class="ri-icon w">&#10007;</span>';
+    const ansLine=it.correct
+      ?`<div class="ri-ans"><b>${String.fromCharCode(65+it.ans)}. ${esc(it.opts[it.ans])}</b></div>`
+      :`<div class="ri-ans">Your answer: <span>${String.fromCharCode(65+it.given)}. ${esc(it.opts[it.given])}</span> &nbsp;|&nbsp; Correct: <b>${String.fromCharCode(65+it.ans)}. ${esc(it.opts[it.ans])}</b></div>`;
+    return`<div class="review-item">${icon}<div class="ri-q">${esc(it.q)}${ansLine}</div></div>`;
+  }).join('');
+
+  // Find next section
+  const nextSub=current<questions.length?questions[current].subject:null;
+  const continueLabel=nextSub?`Start ${nextSub} &#8594;`:'See Final Results &#8594;';
+
+  app.innerHTML=
+    `<div class="section-complete" style="text-align:center;padding:1.5rem 0 0.5rem;">
+       <h2 style="font-size:20px;font-weight:600;margin-bottom:0.4rem;color:#1a1a1a;">${sub} Section Complete!</h2>
+       <div style="font-size:56px;font-weight:700;color:${color};line-height:1;margin:0.5rem 0;">${pct}%</div>
+       <div style="font-size:15px;color:#555;margin-bottom:1rem;">${c} of ${total} correct</div>
+       <div class="results-pills" style="margin-bottom:1.5rem;">
+         <span class="rpill s">&#10003; ${c} correct</span>
+         <span class="rpill d">&#10007; ${w} incorrect</span>
+       </div>
+     </div>
+     <hr style="border:none;border-top:1px solid #eee;margin-bottom:1.25rem;">
+     <h3 style="font-size:14px;font-weight:600;color:#444;margin-bottom:1rem;">${sub} Review</h3>
+     ${rows}
+     <div class="btn-row" style="margin-top:1.5rem;">
+       <button class="btn-back" onclick="goBack()">&#8592; Back</button>
+       <button class="btn-primary" onclick="continueFromSectionEnd()">${continueLabel}</button>
+     </div>`;
+
+  // sidebar badge
+  const hbadge=document.getElementById('hbadge');
+  if(hbadge)hbadge.textContent=sub+' Results';
+}
+
+function renderFinal(app){
+  examComplete=true;
+  // recalculate from answers array to be accurate
+  let totalC=0,totalW=0;
+  const sc={Reading:{c:0,w:0,items:[]},Math:{c:0,w:0,items:[]},Science:{c:0,w:0,items:[]},English:{c:0,w:0,items:[]}};
+  questions.forEach((q,i)=>{
+    const a=answers[i];
+    if(a===null)return;
+    const correct=a===q.ans;
+    if(correct){sc[q.subject].c++;totalC++;}else{sc[q.subject].w++;totalW++;}
+    sc[q.subject].items.push({q:q.q,opts:q.opts,ans:q.ans,given:a,correct});
+  });
+  const total=totalC+totalW;
+
+  // TEAS 7 approximate section weights (based on ATI scoring methodology)
+  // Reading 31%, Math 22%, Science 31%, English 16%
+  const WEIGHTS={Reading:0.31,Math:0.22,Science:0.31,English:0.16};
+
+  // Composite: weighted average of section percentages
+  let compositeNum=0, weightSum=0;
+  SUBJECT_ORDER.forEach(s=>{
+    const d=sc[s];const t=d.c+d.w;
+    if(t>0){
+      const p=(d.c/t)*100;
+      compositeNum+=p*WEIGHTS[s];
+      weightSum+=WEIGHTS[s];
+    }
+  });
+  const composite=weightSum>0?Math.round((compositeNum/weightSum)*10)/10:0;
+
+  // Raw percentage (all questions equal weight)
+  const rawPct=total>0?Math.round((totalC/total)*100):0;
+
+  // Composite color & proficiency label
+  let compColor, proficiency;
+  if(composite>=90){compColor='#1a6b4a';proficiency='Exemplary';}
+  else if(composite>=78){compColor='#1a6b4a';proficiency='Advanced';}
+  else if(composite>=65){compColor='#1a4db0';proficiency='Proficient';}
+  else if(composite>=58){compColor='#b8860b';proficiency='Basic';}
+  else{compColor='#a02020';proficiency='Developmental';}
+
+  const breakdown=SUBJECT_ORDER.map(s=>{
+    const d=sc[s];const t=d.c+d.w;const p=t>0?Math.round((d.c/t)*100):0;
+    let color=p>=80?'#1a6b4a':p>=60?'#1a4db0':'#a02020';
+    const weightPct=Math.round(WEIGHTS[s]*100);
+    return`<div class="results-cell"><div class="rc-label">${s} <span style="color:#bbb;font-weight:400;">· ${weightPct}%</span></div><div class="rc-val" style="color:${color}">${p}%</div><div class="rc-sub">${d.c}/${t} correct</div></div>`;
+  }).join('');
+
+  // per-subject review
+  let reviewHtml='';
+  SUBJECT_ORDER.forEach(s=>{
+    const items=sc[s].items;
+    if(!items.length)return;
+    const rows=items.map(it=>{
+      const icon=it.correct?'<span class="ri-icon c">&#10003;</span>':'<span class="ri-icon w">&#10007;</span>';
+      const ansLine=it.correct
+        ?`<div class="ri-ans"><b>${String.fromCharCode(65+it.ans)}. ${esc(it.opts[it.ans])}</b></div>`
+        :`<div class="ri-ans">Your answer: <span>${String.fromCharCode(65+it.given)}. ${esc(it.opts[it.given])}</span> &nbsp;|&nbsp; Correct: <b>${String.fromCharCode(65+it.ans)}. ${esc(it.opts[it.ans])}</b></div>`;
+      return`<div class="review-item">${icon}<div class="ri-q">${esc(it.q)}${ansLine}</div></div>`;
+    }).join('');
+    reviewHtml+=`<div class="review-section"><h3>${s}</h3>${rows}</div>`;
+  });
+
+  app.innerHTML=
+    `<div class="results-wrap">
+       <div style="text-align:center;padding:1rem 0 1.5rem;background:linear-gradient(180deg,#f8f9ff 0%,transparent 100%);border-radius:14px;margin-bottom:1.5rem;">
+         <div style="font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">Adjusted Composite Score</div>
+         <div style="font-size:72px;font-weight:700;color:${compColor};line-height:1;">${composite.toFixed(1)}%</div>
+         <div style="display:inline-block;margin-top:0.75rem;padding:5px 16px;border-radius:20px;background:${compColor}15;color:${compColor};font-size:13px;font-weight:500;">${proficiency}</div>
+         <div style="font-size:12px;color:#aaa;margin-top:0.75rem;">Weighted average · simulates ATI's scoring approach</div>
+       </div>
+
+       <div style="background:#fafafa;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1.5rem;">
+         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+           <span style="font-size:13px;color:#666;">Raw score (unweighted)</span>
+           <span style="font-size:18px;font-weight:600;color:#1a1a1a;">${rawPct}%</span>
+         </div>
+         <div style="display:flex;gap:10px;justify-content:flex-start;">
+           <span class="rpill s" style="font-size:12px;padding:4px 12px;">&#10003; ${totalC} correct</span>
+           <span class="rpill d" style="font-size:12px;padding:4px 12px;">&#10007; ${totalW} incorrect</span>
+         </div>
+       </div>
+
+       <h3 style="font-size:13px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;">Section breakdown</h3>
+       <div class="results-grid">${breakdown}</div>
+
+       <button class="btn-primary" style="margin-bottom:1.5rem;" onclick="restartQuiz()">&#8635; Start Over</button>
+       <hr style="border:none;border-top:1px solid #eee;margin-bottom:1.25rem;">
+       <h3 style="font-size:14px;font-weight:600;color:#444;margin-bottom:1rem;">Question Review</h3>
+       ${reviewHtml}
+       <button class="btn-primary" style="margin-top:1rem;" onclick="restartQuiz()">&#8635; Start Over</button>
+     </div>`;
+
+  // update sidebar
+  SUBJECT_ORDER.forEach(s=>{
+    const btn=document.getElementById('nav-'+s);
+    if(btn){btn.className='nav-btn done';}
+  });
+  const hbadge=document.getElementById('hbadge');
+  if(hbadge)hbadge.textContent='Final Results';
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function pick(i){if(confirmed)return;selected=i;render();}
+
+function confirm_ans(){
+  if(selected===null)return;
+  confirmed=true;
+  answers[current]=selected;
+  const sub=questions[current].subject;
+  if(selected===questions[current].ans){score++;subjectScores[sub].c++;}
+  else{wrong++;subjectScores[sub].w++;}
+  render();
+  // Fetch explanation if not already cached
+  if(explanations[current]===undefined){
+    fetchExplanation(current);
+  }
+}
+
+async function fetchExplanation(idx){
+  const q=questions[idx];
+  explanations[idx]='loading';
+  render();
+
+  const prompt=`You are a TEAS 7 exam tutor. A student just answered a multiple choice question.
+
+Question: ${q.q}
+${q.passage?'Passage context: '+q.passage.slice(0,600)+'...':''}
+Correct answer: ${String.fromCharCode(65+q.ans)}. ${q.opts[q.ans]}
+${answers[idx]!==q.ans?'Student chose: '+String.fromCharCode(65+answers[idx])+'. '+q.opts[answers[idx]]:'The student got this right.'}
+
+In 2-3 sentences, explain clearly and concisely WHY the correct answer is the best choice. Be direct and educational. Do not start with phrases like "Great question" or "Certainly". Just explain the reasoning.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'';
+    explanations[idx]=text||'Explanation unavailable.';
+  }catch(e){
+    explanations[idx]='Could not load explanation.';
+  }
+  // Only re-render if we're still on this question
+  if(current===idx)render();
+}
+
+function next(){
+  const prevSub=current<questions.length?questions[current].subject:null;
+  current++;
+  // Check if we just crossed a subject boundary (and aren't at the very end)
+  if(current<questions.length && prevSub!==questions[current].subject){
+    showingSectionEnd=true;
+    sectionEndSubject=prevSub;
+    render();
+    return;
+  }
+  selected=answers[current]??null;
+  confirmed=answers[current]!==null;
+  render();
+}
+
+function continueFromSectionEnd(){
+  showingSectionEnd=false;
+  sectionEndSubject=null;
+  selected=answers[current]??null;
+  confirmed=answers[current]!==null;
+  render();
+}
+
+function goBack(){
+  // If we're viewing a section-end screen, back returns to the last question of that section
+  if(showingSectionEnd){
+    showingSectionEnd=false;
+    sectionEndSubject=null;
+    current--;
+    selected=answers[current]??null;
+    confirmed=answers[current]!==null;
+    render();
+    return;
+  }
+  if(current===0)return;
+  // If back would cross a section boundary, show the section-end screen for the prior section instead
+  const curSub=questions[current].subject;
+  const prevSub=questions[current-1].subject;
+  if(curSub!==prevSub){
+    showingSectionEnd=true;
+    sectionEndSubject=prevSub;
+    render();
+    return;
+  }
+  current--;
+  selected=answers[current]??null;
+  confirmed=answers[current]!==null;
+  render();
+}
+
+init();
+
+// Backup event listeners in case inline onclick is blocked
+const _restartBtn = document.getElementById('restart-btn');
+if (_restartBtn) {
+  _restartBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    restartQuiz();
+  });
+}
+</script>
+</body>
+</html>
